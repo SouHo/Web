@@ -1,0 +1,83 @@
+@CHARSET "UTF-8";
+	.left-nav{
+		padding: 0; margin:0;
+  		font-size: 0px;
+  		/*background: url('../image/modify/left_bg.png') repeat-x #00527c;*/
+  		width: 100%;
+  		height: 100%;
+  	}
+  	.left-nav .fontOne{
+  		font-size: 17px;
+		font-weight: bold;
+		color: #0E2D5F;
+  	}
+  	.left-nav .fontTwo{
+  		font-size: 14px;
+		font-weight: bold;
+		color: black;
+  	}
+  	.left-nav ul{
+  		padding: 0; margin: 0;
+  		background: #f9f9f9;
+  	}
+  	.left-nav li{
+  		border-bottom: 1px solid white; 
+  		list-style: none;
+  		line-height: 25px;
+  		color: black;
+  		font-size: 16px;
+		font-weight: bold; 
+  	}
+  	/* .left-nav li span{
+  		color: black;
+  		font-size: 14px;
+		font-weight: bold; 
+  	} */
+  	.left-nav li a{
+  		white-space: nowrap;
+  		font-size: 10px;
+  		overflow: hidden;
+  		text-overflow: ellipsis;
+  		padding-left: 20px;
+		padding-top: 5px;
+  		text-decoration: none;
+  		display: block;
+  		font-weight: bold; 
+  	}
+  	/* .left-nav a:hover{
+  		opacity: 1; 
+  		filter: alpha(opacity=100);
+  	} */
+  	.left-nav li.current, .left-nav a:hover{
+  		background: #deedfb;
+  		cursor: pointer;
+  	}
+	.panelMenu{
+	  background: #D7E0E9;
+	  color: #064a6d;
+	  font-size: 14px;
+	  height:30px;
+	  line-height:34px;
+	 /*background: -moz-linear-gradient(top,#EFF5FF 0,#E0ECFF 100%);
+	  background: -o-linear-gradient(top,#EFF5FF 0,#E0ECFF 100%);
+	  background: linear-gradient(to bottom,#EFF5FF 0,#E0ECFF 100%);
+	  background-repeat: repeat-x;
+	  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#EFF5FF,endColorstr=#E0ECFF,GradientType=0);*/
+	}
+	.icon-left-expand{
+	  background:url('images/accordion_arrows.png') no-repeat -16px 0;
+	  background-position-y: center;
+	}
+	.icon-left-collapse{
+	  background:url('../easyui/images/accordion_arrows.png') no-repeat 0px 0;
+	  background-position-y: center;
+	  /* width:16px; */
+	}
+fieldset{
+padding: 5px;
+border: 1px solid #C5DBEC;
+border-bottom-width: 1px;
+border-left-width: 1px;
+border-right-width: 1px;
+margin-bottom: 1em;
+}	

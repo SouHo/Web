@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.1.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd"
+	default-lazy-init="true">
+
+	<!-- 自动扫描 -->
+	<context:annotation-config />
+	<context:component-scan base-package="cn.csbit">
+	</context:component-scan>
+
+	<bean id="jdbcTemplate" class="cn.csbit.core.jdbc.JdbcTemplate">
+		<constructor-arg ref="dataSource"></constructor-arg>
+	</bean>
+	<!-- 事务管理 -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager"
+		p:sessionFactory-ref="sessionFactory" />
+	<tx:annotation-driven transaction-manager="transactionManager"
+		proxy-target-class="true"></tx:annotation-driven>
+	<aop:aspectj-autoproxy proxy-target-class="true"></aop:aspectj-autoproxy>
+
+	<!-- production环境 -->
+	<beans profile="production">
+		<context:property-placeholder
+			ignore-unresolvable="true" location="classpath:/application.properties" />
+
+		<bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource"
+			destroy-method="close">
+			<!-- Connection Info -->
+			<property name="driverClassName" value="${jdbc.driver}" />
+			<property name="url" value="${jdbc.url}" />
+			<property name="username" value="${jdbc.username}" />
+			<property name="password" value="${jdbc.password}" />
+			<property name="defaultCatalog" value="${jdbc.defaultCatalog}" />
+<!-- 			<property name="dbProperties">
+				<props>
+					<prop key="socketFactory">org.newsclub.net.mysql.AFUNIXDatabaseSocketFactory
+					</prop>
+					<prop key="junixsocket.file">${jdbc.socket}</prop>
+				</props>
+			</property> -->
+
+			<property name="initialSize" value="${dbcp.initialSize}" />
+			<property name="maxActive" value="${dbcp.maxActive}" />
+			<property name="maxIdle" value="${dbcp.maxIdle}" />
+			<property name="minIdle" value="${dbcp.minIdle}" />
+
+			<!-- 等待链接被归还的最大时间(ms)，超过则抛出异常，设置为-1则无限等待 -->
+			<property name="maxWait" value="10000" />
+			<!-- 回收泄漏的链接 -->
+			<property name="removeAbandoned" value="true" />
+			<!-- 超过removeAbandonedTimeout(s)的链接未关闭，视为泄漏 -->
+			<property name="removeAbandonedTimeout" value="300" />
+			<!-- 操作记录日志 -->
+			<property name="logAbandoned" value="true" />
+
+			<property name="validationQuery" value="select 1" />
+			<!-- 获取池中链接时通过执行validationQuery检查其有效性 -->
+			<property name="testOnBorrow" value="true" />
+			<!-- 归还链接时通过执行validationQuery检查其有效性 -->
+			<property name="testOnReturn" value="true" />
+			<!-- 指明链接被空闲链接回收器进行检验，如果检测失败则从池中删除 -->
+			<property name="testWhileIdle" value="true" />
+			<!-- 每次空闲链接回收器线程运行期间检查的链接数 -->
+			<property name="numTestsPerEvictionRun" value="5" />
+
+			<property name="defaultAutoCommit" value="true" />
+			<!-- 空闲链接回收器线程运行期间休眠的时间(ms), 负数表示不运行空闲连接回收器 -->
+			<property name="timeBetweenEvictionRunsMillis" value="3600000" />
+			<!-- 连接在池中保持空闲而不被空闲连接回收器回收的最小时间(ms) -->
+			<property name="minEvictableIdleTimeMillis" value="3600000" />
+		</bean>
+
+		<bean id="sessionFactory"
+			class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"
+			p:dataSource-ref="dataSource">
+			<!-- mapping的配在可以用spring提供的自动扫描包 -->
+			<property name="packagesToScan" value="cn.csbit.**.model" />
+			<property name="hibernateProperties">
+				<props>
+					<prop key="javax.persistence.validation.mode">none</prop>
+					<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+					<prop key="hibernate.show_sql">false</prop>
+					<prop key="hibernate.format_sql">false</prop>
+				</props>
+			</property>
+		</bean>
+	</beans>
+
+	<beans profile="development">
+		<context:annotation-config />
+		<context:component-scan base-package="tests">
+		</context:component-scan>
+		<context:property-placeholder
+			ignore-resource-not-found="true" location="classpath:/application.properties" />
+
+		<bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource"
+			destroy-method="close">
+			<property name="driverClassName" value="${jdbc.driver}" />
+			<property name="url" value="${jdbc.url}" />
+			<property name="username" value="${jdbc.username}" />
+			<property name="password" value="${jdbc.password}" />
+			<property name="defaultCatalog" value="${jdbc.defaultCatalog}" />
+			<property name="defaultAutoCommit" value="true" />
+<!-- 			<property name="dbProperties">
+				<props>
+					<prop key="socketFactory">org.newsclub.net.mysql.AFUNIXDatabaseSocketFactory
+					</prop>
+					<prop key="junixsocket.file">${jdbc.socket}</prop>
+				</props>
+			</property> -->
+		</bean>
+
+		<bean id="sessionFactory"
+			class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"
+			p:dataSource-ref="dataSource">
+			<!-- mapping的配在可以用spring提供的自动扫描包 -->
+			<property name="packagesToScan" value="cn.csbit.**.model" />
+			<property name="hibernateProperties">
+				<props>
+					<prop key="javax.persistence.validation.mode">none</prop>
+					<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+					<prop key="hibernate.show_sql">true</prop>
+					<prop key="hibernate.format_sql">true</prop>
+				</props>
+			</property>
+		</bean>
+	</beans>
+</beans>
