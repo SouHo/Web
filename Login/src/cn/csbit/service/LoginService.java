@@ -15,8 +15,9 @@ public class LoginService {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-	@Transactional
+	
 	// 登录验证
+	@Transactional()
 	public User checkExist(String name, String password) {
 		User user = this.rootDAO.getById(User.class, name);
 		if (user == null) {
